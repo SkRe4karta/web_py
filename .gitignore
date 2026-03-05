@@ -5,3 +5,10 @@ venv/
 env/
 ENV/
 *.venv
+
+# Виртуальное окружение
+.venv/
+venv/
+env/
+ENV/
+*.venv
