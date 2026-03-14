@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="mb-3">Проверка номера телефона</h1>
+
+<form method="POST" style="max-width: 600px;">
+  <div class="mb-3">
+    <label class="form-label">Номер телефона</label>
+
+    <input
+      type="text"
+      name="phone"
+      class="form-control {% if error %}is-invalid{% endif %}"
+      value="{{ phone_raw }}"
+      placeholder="+7 (123) 456-75-90"
+    >
+
+    {% if error %}
+      <div class="invalid-feedback">{{ error }}</div>
+    {% endif %}
+  </div>
+
+  <button type="submit" class="btn btn-primary">Проверить</button>
+</form>
+
+{% if formatted %}
+  <div class="alert alert-success mt-4">
+    Номер в формате: <b>{{ formatted }}</b>
+  </div>
+{% endif %}
+
+<div class="text-muted mt-2">
+  Допустимые символы: цифры, пробел, (), -, ., +.
+</div>
+
+{% endblock %}

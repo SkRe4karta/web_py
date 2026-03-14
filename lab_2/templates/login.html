@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="mb-3">Login</h1>
+
+<form method="POST" class="mb-4" style="max-width: 420px;">
+  <div class="mb-3">
+    <label class="form-label">Login</label>
+    <input class="form-control" type="text" name="login">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Password</label>
+    <input class="form-control" type="password" name="password">
+  </div>
+
+  <button class="btn btn-primary" type="submit">Send</button>
+</form>
+
+{% if login %}
+<div class="alert alert-success">
+  <div><b>Entered data</b></div>
+  <div>Login: {{ login }}</div>
+  <div>Password: {{ password }}</div>
+</div>
+{% endif %}
+
+{% endblock %}

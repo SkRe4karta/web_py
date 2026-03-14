@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+<div class="card-body">
+
+<h2 class="card-title">Счётчик посещений</h2>
+
+<p class="card-text">
+Вы посетили эту страницу <b>{{ visits }}</b> раз.
+</p>
+
+{% if current_user.is_authenticated %}
+<div class="alert alert-success">
+Вы вошли как {{ current_user.id }}
+</div>
+{% endif %}
+
+</div>
+</div>
+
+{% endblock %}
