@@ -1,28 +1,52 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<h1 class="mb-3">Login</h1>
+<h2 class="mb-3">Форма авторизации</h2>
 
-<form method="POST" class="mb-4" style="max-width: 420px;">
-  <div class="mb-3">
-    <label class="form-label">Login</label>
-    <input class="form-control" type="text" name="login">
-  </div>
+<div class="card shadow" style="max-width:500px">
 
-  <div class="mb-3">
-    <label class="form-label">Password</label>
-    <input class="form-control" type="password" name="password">
-  </div>
+<div class="card-body">
 
-  <button class="btn btn-primary" type="submit">Send</button>
+<form method="POST">
+
+<div class="mb-3">
+
+<label class="form-label">Логин</label>
+
+<input type="text" name="login" class="form-control">
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">Пароль</label>
+
+<input type="password" name="password" class="form-control">
+
+</div>
+
+<button class="btn btn-primary">Войти</button>
+
 </form>
 
-{% if login %}
-<div class="alert alert-success">
-  <div><b>Entered data</b></div>
-  <div>Login: {{ login }}</div>
-  <div>Password: {{ password }}</div>
 </div>
+
+</div>
+
+
+{% if login %}
+
+<div class="alert alert-success mt-4">
+
+<h5>Введенные данные</h5>
+
+<p>Login: {{ login }}</p>
+
+<p>Password: {{ password }}</p>
+
+</div>
+
 {% endif %}
 
 {% endblock %}

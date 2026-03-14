@@ -1,36 +1,62 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<h1 class="mb-3">Проверка номера телефона</h1>
+<h2 class="mb-3">Проверка номера телефона</h2>
 
-<form method="POST" style="max-width: 600px;">
-  <div class="mb-3">
-    <label class="form-label">Номер телефона</label>
+<div class="card shadow" style="max-width:500px">
 
-    <input
-      type="text"
-      name="phone"
-      class="form-control {% if error %}is-invalid{% endif %}"
-      value="{{ phone_raw }}"
-      placeholder="+7 (123) 456-75-90"
-    >
+<div class="card-body">
 
-    {% if error %}
-      <div class="invalid-feedback">{{ error }}</div>
-    {% endif %}
-  </div>
+<form method="POST">
 
-  <button type="submit" class="btn btn-primary">Проверить</button>
-</form>
+<div class="mb-3">
 
-{% if formatted %}
-  <div class="alert alert-success mt-4">
-    Номер в формате: <b>{{ formatted }}</b>
-  </div>
+<label class="form-label">Введите номер телефона</label>
+
+<input
+type="text"
+name="phone"
+value="{{ phone_raw }}"
+placeholder="+7 (123) 456-75-90"
+class="form-control {% if error %}is-invalid{% endif %}"
+>
+
+{% if error %}
+
+<div class="invalid-feedback">
+
+{{ error }}
+
+</div>
+
 {% endif %}
 
-<div class="text-muted mt-2">
-  Допустимые символы: цифры, пробел, (), -, ., +.
 </div>
+
+<button class="btn btn-primary">
+
+Проверить
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+{% if formatted %}
+
+<div class="alert alert-success mt-4">
+
+Номер в формате:
+
+<strong>{{ formatted }}</strong>
+
+</div>
+
+{% endif %}
 
 {% endblock %}

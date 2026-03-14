@@ -1,12 +1,41 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<h1 class="mb-3">Flask Lab 2</h1>
+<div class="card shadow">
+
+<div class="card-body">
+
+<h2 class="mb-3">Лабораторная работа №2</h2>
+
+<p>
+
+В данном веб-приложении реализованы следующие функции:
+
+</p>
 
 <ul>
-  <li><a href="/request-info?name=ivan&age=20">request-info (пример с параметрами)</a></li>
-  <li><a href="/login">login</a></li>
-  <li><a href="/phone">phone</a></li>
+
+<li>Отображение параметров URL запроса</li>
+
+<li>Отображение заголовков HTTP запроса</li>
+
+<li>Отображение Cookie</li>
+
+<li>Форма авторизации</li>
+
+<li>Форма проверки номера телефона</li>
+
 </ul>
+
+<p>
+
+Используйте верхнее меню для перехода между страницами.
+
+</p>
+
+</div>
+
+</div>
 
 {% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-3">Cookies</h2>
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<table class="table table-bordered">
+
+<tr>
+<th>Cookie</th>
+<th>Value</th>
+</tr>
+
+{% for key, value in cookies.items() %}
+
+<tr>
+<td>{{ key }}</td>
+<td>{{ value }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-3">Параметры URL</h2>
+
+<div class="card shadow">
+
+<div class="card-body">
+
+<table class="table table-bordered">
+
+<tr>
+<th>Параметр</th>
+<th>Значение</th>
+</tr>
+
+{% for key, value in args.items() %}
+
+<tr>
+<td>{{ key }}</td>
+<td>{{ value }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<p>
+
+Пример:
+
+<a href="/url?name=ivan&age=20">/url?name=ivan&age=20</a>
+
+</p>
+
+</div>
+
+</div>
+
+{% endblock %}
