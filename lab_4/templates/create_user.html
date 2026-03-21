@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% from "_user_form.html" import user_form %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Создание пользователя</h2>
+    {{ user_form(form, url_for('create_user'), 'Создать') }}
+</div>
+{% endblock %}

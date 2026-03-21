@@ -1,0 +1,23 @@
+{% macro render_field(field) %}
+<div class="mb-3">
+    {{ field.label(class="form-label") }}
+    {{ field(class="form-control" + (" is-invalid" if field.errors else ""), **kwargs) }}
+    {% if field.errors %}
+        <div class="invalid-feedback">
+            {% for error in field.errors %}
+                {{ error }}<br>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro user_form(form, action_url, button_label) %}
+<form method="post" action="{{ action_url }}">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.widget.input_type != 'hidden' and field.name != 'submit' %}
+        {{ render_field(field) }}
+    {% endfor %}
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endmacro %}

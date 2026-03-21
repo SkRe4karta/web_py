@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% from "_user_form.html" import user_form %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Редактирование пользователя: {{ user.full_name }}</h2>
+    {{ user_form(form, url_for('edit_user', user_id=user.id), 'Сохранить') }}
+</div>
+{% endblock %}
