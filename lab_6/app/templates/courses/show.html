@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('courses.index') }}">Курсы</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ course.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ course.name }}</h1>
+            <p class="text-muted">Автор: {{ course.author.full_name }}</p>
+            <p class="text-muted">Категория: {{ course.category.name }}</p>
+            
+            <div class="course-rating">
+                {% if course.rating_num > 0 %}
+                    <div class="rating-stars">
+                        {% set rating_rounded = (course.rating / 0.5)|round(0) * 0.5 %}
+                        {% for i in range(5) %}
+                            {% if i < rating_rounded %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        <span class="ms-2">{{ "%.1f"|format(course.rating) }} из 5 ({{ course.rating_num }} {{ 'отзыв' if course.rating_num == 1 else 'отзывов' if course.rating_num % 10 == 0 or course.rating_num > 4 else 'отзыва' }})</span>
+                    </div>
+                {% else %}
+                    <div class="text-muted">Нет отзывов</div>
+                {% endif %}
+            </div>
+            
+            <h3 class="mt-4">Описание курса</h3>
+            <p>{{ course.full_desc }}</p>
+        </div>
+        
+        <div class="col-md-4">
+            {% if course.bg_image %}
+                <img src="{{ course.bg_image.url }}" class="img-fluid rounded" alt="{{ course.name }}">
+            {% endif %}
+        </div>
+    </div>
+    
+    <hr class="my-4">
+    
+    <h3>Последние отзывы</h3>
+    <div class="reviews-list">
+        {% for review in recent_reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-user">{{ review.user.full_name }}</span>
+                    <span class="review-date">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="review-rating">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span class="ms-2">({{ review.rating }}/5)</span>
+                </div>
+                <div class="review-text">
+                    {{ review.text }}
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Пока нет отзывов. Будьте первым, кто оставит отзыв!
+            </div>
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-3">
+        <a href="{{ url_for('courses.reviews_list', course_id=course.id) }}" class="btn btn-primary">Все отзывы →</a>
+    </div>
+    
+    <hr class="my-4">
+    
+    {% if user_review %}
+        <div class="your-review">
+            <h4>Ваш отзыв</h4>
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-user">{{ user_review.user.full_name }}</span>
+                    <span class="review-date">{{ user_review.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="review-rating">
+                    {% for i in range(5) %}
+                        {% if i < user_review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span class="ms-2">({{ user_review.rating }}/5)</span>
+                </div>
+                <div class="review-text">
+                    {{ user_review.text }}
+                </div>
+                <div class="review-actions">
+                    <form method="POST" action="{{ url_for('courses.delete_review', course_id=course.id, review_id=user_review.id) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить свой отзыв?')">Удалить отзыв</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% if current_user.is_authenticated %}
+            <div class="form-review">
+                <h4>Оставить отзыв</h4>
+                <form method="POST" action="{{ url_for('courses.add_review', course_id=course.id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.rating.label(class="form-label") }}
+                        {{ form.rating(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label") }}
+                        {{ form.text(class="form-control", rows=5, placeholder="Поделитесь своим мнением о курсе...") }}
+                    </div>
+                    {{ form.submit(class="btn btn-review") }}
+                </form>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <a href="{{ url_for('auth.login') }}" class="alert-link">Войдите</a>, чтобы оставить отзыв
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

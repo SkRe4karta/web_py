@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('courses.index') }}">Курсы</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('courses.show', course_id=course.id) }}">{{ course.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Все отзывы</li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Отзывы о курсе "{{ course.name }}"</h1>
+        <a href="{{ url_for('courses.show', course_id=course.id) }}" class="btn btn-outline-secondary">Назад к курсу</a>
+    </div>
+    
+    {% if user_review %}
+        <div class="your-review mb-4">
+            <h4>Ваш отзыв</h4>
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-user">{{ user_review.user.full_name }}</span>
+                    <span class="review-date">{{ user_review.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="review-rating">
+                    {% for i in range(5) %}
+                        {% if i < user_review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span class="ms-2">({{ user_review.rating }}/5)</span>
+                </div>
+                <div class="review-text">
+                    {{ user_review.text }}
+                </div>
+                <div class="review-actions">
+                    <form method="POST" action="{{ url_for('courses.delete_review', course_id=course.id, review_id=user_review.id) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить свой отзыв?')">Удалить отзыв</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% if current_user.is_authenticated %}
+            <div class="form-review mb-4">
+                <h4>Оставить отзыв</h4>
+                <form method="POST" action="{{ url_for('courses.add_review', course_id=course.id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.rating.label(class="form-label") }}
+                        {{ form.rating(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label") }}
+                        {{ form.text(class="form-control", rows=5, placeholder="Поделитесь своим мнением о курсе...") }}
+                    </div>
+                    {{ form.submit(class="btn btn-review") }}
+                </form>
+            </div>
+        {% else %}
+            <div class="alert alert-info mb-4">
+                <a href="{{ url_for('auth.login') }}" class="alert-link">Войдите</a>, чтобы оставить отзыв
+            </div>
+        {% endif %}
+    {% endif %}
+    
+    <div class="filter-bar">
+        <form method="GET" action="" class="row g-3 align-items-end">
+            <div class="col-auto">
+                <label for="sort" class="form-label">Сортировать:</label>
+                <select name="sort" id="sort" class="form-select">
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Сначала новые</option>
+                    <option value="positive" {% if current_sort == 'positive' %}selected{% endif %}>Сначала положительные</option>
+                    <option value="negative" {% if current_sort == 'negative' %}selected{% endif %}>Сначала отрицательные</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="reviews-list">
+        {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-user">{{ review.user.full_name }}</span>
+                    <span class="review-date">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+                <div class="review-rating">
+                    {% for i in range(5) %}
+                        {% if i < review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    <span class="ms-2">({{ review.rating }}/5)</span>
+                </div>
+                <div class="review-text">
+                    {{ review.text }}
+                </div>
+                {% if current_user.is_authenticated and review.user_id == current_user.id %}
+                    <div class="review-actions">
+                        <form method="POST" action="{{ url_for('courses.delete_review', course_id=course.id, review_id=review.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить свой отзыв?')">Удалить</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Пока нет отзывов. Будьте первым!
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% if pagination.pages > 1 %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('courses.reviews_list', course_id=course.id, page=pagination.prev_num, sort=current_sort) }}">« Предыдущая</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">« Предыдущая</span>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != pagination.page %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('courses.reviews_list', course_id=course.id, page=page_num, sort=current_sort) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('courses.reviews_list', course_id=course.id, page=pagination.next_num, sort=current_sort) }}">Следующая »</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Следующая »</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+{% endblock %}
