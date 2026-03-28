@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Отчёт по страницам</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Страница</th>
+            <th>Количество посещений</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row.path }}</td>
+            <td>{{ row.count }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">Нет данных</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <a href="{{ url_for('stats.export_pages_report') }}" class="btn btn-primary">Экспорт в CSV</a>
+    <a href="{{ url_for('stats.logs') }}" class="btn btn-secondary">Назад к журналу</a>
+</div>
+{% endblock %}

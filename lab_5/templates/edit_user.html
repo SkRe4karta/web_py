@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_user_form.html" import user_form %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Редактирование пользователя: {{ user.full_name }}</h2>
+    <form method="post" action="{{ url_for('edit_user', user_id=user.id) }}">
+        {{ form.hidden_tag() }}
+        {% for field in form if field.widget.input_type != 'hidden' and field.name != 'submit' %}
+            <div class="mb-3">
+                {{ field.label(class="form-label") }}
+                {% if field.name == 'role_id' and not is_admin %}
+                    {{ field(class="form-control", disabled=True) }}
+                {% else %}
+                    {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+                {% endif %}
+                {% if field.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in field.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+</div>
+{% endblock %}
